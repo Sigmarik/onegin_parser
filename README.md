@@ -31,4 +31,4 @@ Project is distributed under MIT license. More licensing information is specifie
 We don't think anyone will be contributing to this project as it was made purely for educational purposes.
 But, if you still want to contribute, you can learn how to do so by reading file **CONTRIBUTING.md**.
 ## Contacts
-(author) Kudryashov Ilya - kudriashov.it@phystech.edu
+**(author)** Kudryashov Ilya - kudriashov.it@phystech.edu
