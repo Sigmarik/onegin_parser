@@ -35,7 +35,7 @@ void print_label();
 static int log_threshold = 1;
 static void* __log_threshold_array[1] = {&log_threshold};
 
-static const char* text_source_name = "onegin.txt";
+static char text_source_name[1000] = "onegin.txt";
 static void* __text_source_name_array[1] = {&text_source_name};
 
 static const int NUMBER_OF_TAGS = 3;
@@ -52,7 +52,7 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
     {
         .name = {'I', "importance"}, 
         .action = {
-            .parameters = __text_source_name_array,
+            .parameters = __log_threshold_array,
             .parameters_length = 1, 
             .function = edit_int,
         },
@@ -61,13 +61,13 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
                         "    Does not check if integer is specified."
     },
     {
-        .name = {'O', "open"}, 
+        .name = {'R', "read"}, 
         .action = {
-            .parameters = __log_threshold_array,
+            .parameters = __text_source_name_array,
             .parameters_length = 1, 
             .function = edit_string,
         },
-        .description = "(in the form of -O[name]) makes program open\n"
+        .description = "(in the form of -R[name]) makes program open\n"
                         "    specified file instead of the default one."
     },
 };
@@ -97,23 +97,18 @@ int main(const int argc, const char** argv) {
     log_printf(STATUS_REPORTS, "status", "Descovered %d lines of text.\n", text_size);
 
     log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
-
     write_file("text_copy.txt", text, text_size, &errno);
 
     log_printf(STATUS_REPORTS, "status", "Sorting...\n");
-
     qsort(text, text_size, sizeof(text[0]), compare_lines);
 
     log_printf(STATUS_REPORTS, "status", "Exporting sorted lines...\n");
-
     write_file("text_sorted.txt", text, text_size, &errno);
 
     log_printf(STATUS_REPORTS, "status", "Re-sorting...\n");
-
     qsort(text, text_size, sizeof(text[0]), compare_reverse_lines);
 
     log_printf(STATUS_REPORTS, "status", "Exporting inv-sorted lines...\n");
-
     write_file("text_inv_sorted.txt", text, text_size, &errno);
 
     return EXIT_SUCCESS;

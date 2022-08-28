@@ -39,5 +39,5 @@ void edit_int(const int argc, void** argv, const char* argument) {
 }
 
 void edit_string(const int argc, void** argv, const char* argument) {
-    *(const char**)argv[0] = argument;
+    strcpy(*(char**)argv, argument);
 }

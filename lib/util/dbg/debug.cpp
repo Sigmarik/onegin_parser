@@ -7,5 +7,5 @@ void log_end_program() {
     log_close();
     if (errno == 0) return;
     printf("Error code: %d\n", errno);
-    perror("Error: ");
+    perror("Error");
 }
