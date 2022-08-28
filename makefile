@@ -23,7 +23,7 @@ main: $(MAIN_OBJECTS)
 	$(CC) $(MAIN_OBJECTS) -o $(BLD_FOLDER)/$(BLD_FULL_NAME)
 
 run:
-	cd $(BLD_FOLDER) && exec ./$(BLD_FULL_NAME)
+	cd $(BLD_FOLDER) && exec ./$(BLD_FULL_NAME) $(ARGS)
 
 main.o:
 	$(CC) $(CFLAGS) main.cpp
