@@ -7,14 +7,6 @@
 
 #include "util/dbg/debug.h"
 
-/*
-strlen
-ctrcpy
-strchr
-strcmp
-strcat
-*/
-
 int compare_lines(const void* str_a, const void* str_b) {
     return strcmp(*(const char**)str_a, *(const char**)str_b);
 }
