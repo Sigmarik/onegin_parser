@@ -8,13 +8,13 @@
 #include "util/dbg/debug.h"
 
 int compare_lines(const void* str_a, const void* str_b) {
-    return strcmp(*(const char**)str_a, *(const char**)str_b);
+    return wcscmp(*(cstr*)str_a, *(cstr*)str_b);
 }
 
 int compare_reverse_lines(const void* void_a, const void* void_b) {
-    const char* str_a = *(const char**) void_a;
-    const char* str_b = *(const char**) void_b;
-    int id_a = strlen(str_a), id_b = strlen(str_b);
+    cstr str_a = *(cstr*) void_a;
+    cstr str_b = *(cstr*) void_b;
+    int id_a = wcslen(str_a), id_b = wcslen(str_b);
     while (--id_a >= 0 && --id_b >= 0) {
         if (str_a[id_a] > str_b[id_b]) return 1;
         if (str_a[id_a] < str_b[id_b]) return -1;
@@ -24,54 +24,73 @@ int compare_reverse_lines(const void* void_a, const void* void_b) {
     return 0;
 }
 
-void reverse(char* string, int* error_code) {
-    _LOG_FAIL_CHECK_(string, "error", ERROR_REPORTS, return;, error_code, EFAULT);
-    int length = strlen(string);
-    for (int id = 0; id * 2 < length - 1; id++) {
-        char mem = string[id];
-        string[id] = string[length - id - 1];
-        string[length - id - 1] = mem;
-    }
-}
+//! TODO: I suggest use this kind of structure:
+// struct Substring {
+//     char* begining;
+//     size_t length; 
+// };
+//
+// typedef Substring Line;
+//
+// struct File {
+//     char* buffer;
+//     Line* lines;
+// };
+//! I prefer using default C data types because you can easily put the into std functions.
+//! How, for example, is it possible to pass char** into standard or semi-standard function
+//! with this struct in single line of code?
 
-int read_file(const char* file_name, char*** text, int* error_code) {
+int read_file(const char* file_name, str* *text, str *buffer, int* error_code) {
     _LOG_FAIL_CHECK_(file_name, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, EFAULT);
     _LOG_FAIL_CHECK_(text, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, EFAULT);
+    _LOG_FAIL_CHECK_(buffer, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, EFAULT);
 
     FILE* file = fopen(file_name, "r");
     _LOG_FAIL_CHECK_(file, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, ENOENT);
 
-    *text = (char**)calloc(FILE_MAX_LENGTH, sizeof(char*));
-    for (int id = 0; id < FILE_MAX_LENGTH; id++) {
-        (*text)[id] = (char*)calloc(LINE_MAX_LENGTH, sizeof(char));
+    fseek(file, 0L, SEEK_END);
+    int file_size = ftell(file);
+    fseek(file, 0L, SEEK_SET);
+
+    int line_count = 1;
+
+    *buffer = (str)calloc(file_size, sizeof(**buffer));
+    for (int char_id = 0; char_id < file_size; char_id++) {
+        //fread(*buffer + char_id, sizeof(**buffer), 1, file);
+        (*buffer)[char_id] = fgetwc(file);
+        if ((*buffer)[char_id] == '\n') line_count++;
     }
 
-    for (int line_id = 0; line_id < FILE_MAX_LENGTH; ++line_id) {
-        int eof_detected = 0;  //         '\0' at the end v
-        for (int char_id = 0; char_id < LINE_MAX_LENGTH - 1; char_id++) {
-            char curent = getc(file);
-            if (curent == '\n') break;
-            if (curent == EOF) {
-                eof_detected = 1;
-                break;
-            }
-            (*text)[line_id][char_id] = curent;
+    *text = (str*)calloc(line_count, sizeof(**text));
+    (*text)[0] = *buffer;
+    int line_id = 0;
+    for (int char_id = 0; char_id < file_size; char_id++) {
+        if ((*buffer)[char_id] == (wchar_t)'\n') {
+            (*buffer)[char_id] = 0;
+            (*text)[++line_id] = (*buffer) + char_id + 1;
         }
-        if (eof_detected) return line_id + 1;
     }
 
-    if (error_code) *error_code = EFBIG;
-    
-    return FILE_MAX_LENGTH;
+    return line_count;
 }
 
-void write_file(const char* file_name, const char*const* text, int text_length, int* error_code) {
+void write_file(const char* file_name, const cstr* text, int text_length, int* error_code) {
     _LOG_FAIL_CHECK_(file_name, "error", ERROR_REPORTS, return;, error_code, EFAULT);
     _LOG_FAIL_CHECK_(text, "error", ERROR_REPORTS, return;, error_code, EFAULT);
 
     FILE* file = fopen(file_name, "w");
+
+    //! TODO: think if you can speed up writing with syscall (like write on linux)
+    //! It will not optimize writing as, probably, compiler already transforms
+    //! high level fprintf calls to low-level syscalls for exact system or even more
+    //! optimized low-level counterpart.
     _LOG_FAIL_CHECK_(file, "error", ERROR_REPORTS, return;, error_code, ENOENT);
     for (int line_id = 0; line_id < text_length; line_id++) {
-        fprintf(file, "%s\n", text[line_id]);
+        int char_id = 0;
+        while (text[line_id][char_id] != 0) {
+            fputwc(text[line_id][char_id], file);
+            char_id++;
+        }
+        fputwc('\n', file);
     }
 }

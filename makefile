@@ -16,7 +16,7 @@ BLD_FULL_NAME = $(BLD_NAME)_v$(BLD_VERSION)_$(BLD_TYPE)_$(BLD_PLATFORM)$(BLD_FOR
 all: main
 
 MAIN_ASSETS = onegin.txt
-MAIN_OBJECTS = main.o txtproc.o argparser.o logger.o debug.o
+MAIN_OBJECTS = main.o txtproc.o argparser.o logger.o debug.o sorting.o
 main: $(MAIN_OBJECTS)
 	mkdir -p $(BLD_FOLDER)
 	cp $(MAIN_ASSETS) $(BLD_FOLDER)
@@ -39,6 +39,9 @@ logger.o:
 
 debug.o:
 	$(CC) $(CFLAGS) lib/util/dbg/debug.cpp
+
+sorting.o:
+	$(CC) $(CFLAGS) lib/sorting.cpp
 
 clean:
 	rm -rf *.o

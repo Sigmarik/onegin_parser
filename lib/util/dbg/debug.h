@@ -38,7 +38,7 @@ do {                                                                            
     if (!(equation)) {                                                                                                \
         if (errcode) *(errcode) = (errtype);                                                                          \
         log_printf(importance, "error", "Equation %s in file %s at line %d failed.\n", #equation, __FILE__, __LINE__);\
-        action                                                                                                        \
+        action;                                                                                                       \
     }                                                                                                                 \
 } while(0)
 #else
