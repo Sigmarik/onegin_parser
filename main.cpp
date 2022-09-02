@@ -18,7 +18,6 @@
 #include "lib/txtproc.h"
 #include "lib/sorting.h"
 
-
 /**
  * @brief Prints poem of owls.
  * 
@@ -33,6 +32,17 @@ void print_owl(const int argc, void** argv, const char* argument);
  * 
  */
 void print_label();
+
+/**
+ * @brief Stores text as a bunch of lines.
+ * 
+ * @param lines pointers to characters stored in charbuffer making lines of text
+ * @param charbuffer buffer with concatenated together lines of text
+ */
+struct Text {
+    str* lines = NULL;
+    str charbuffer = NULL;
+};
 
 static int log_threshold = 1;
 static void* __log_threshold_array[1] = {&log_threshold};
@@ -91,9 +101,8 @@ int main(const int argc, const char** argv) {
 
     log_printf(STATUS_REPORTS, "status", "Reading file %s...\n", text_source_name);
 
-    str* text = NULL;
-    str buffer = NULL;
-    int text_size = read_file(text_source_name, &text, &buffer, &errno);
+    struct Text text;
+    int text_size = read_file(text_source_name, &text.lines, &text.charbuffer, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
 
     if (text_size == READING_FAILURE) {
@@ -104,25 +113,25 @@ int main(const int argc, const char** argv) {
     log_printf(STATUS_REPORTS, "status", "Descovered %d lines of text.\n", text_size);
 
     log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
-    write_file("text_copy.txt", text, text_size, &errno);
+    write_file("text_copy.txt", text.lines, text_size, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
 
     log_printf(STATUS_REPORTS, "status", "Sorting...\n");
-    msort(text, text_size, sizeof(text[0]), compare_lines);
+    msort(text.lines, text_size, sizeof(text.lines[0]), compare_lines, NULL);
 
     log_printf(STATUS_REPORTS, "status", "Exporting sorted lines...\n");
-    write_file("text_sorted.txt", text, text_size, &errno);
+    write_file("text_sorted.txt", text.lines, text_size, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
 
     log_printf(STATUS_REPORTS, "status", "Re-sorting...\n");
-    msort(text, text_size, sizeof(text[0]), compare_reverse_lines);
+    msort(text.lines, text_size, sizeof(text.lines[0]), compare_reverse_lines, NULL);
 
     log_printf(STATUS_REPORTS, "status", "Exporting inv-sorted lines...\n");
-    write_file("text_inv_sorted.txt", text, text_size, &errno);
+    write_file("text_inv_sorted.txt", text.lines, text_size, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
 
-    free(buffer);
-    free(text);
+    free(text.lines);
+    free(text.charbuffer);
 
     return EXIT_SUCCESS;
 }

@@ -24,22 +24,6 @@ int compare_reverse_lines(const void* void_a, const void* void_b) {
     return 0;
 }
 
-//! TODO: I suggest use this kind of structure:
-// struct Substring {
-//     char* begining;
-//     size_t length; 
-// };
-//
-// typedef Substring Line;
-//
-// struct File {
-//     char* buffer;
-//     Line* lines;
-// };
-//! I prefer using default C data types because you can easily put the into std functions.
-//! How, for example, is it possible to pass char** into standard or semi-standard function
-//! with this struct in single line of code?
-
 int read_file(const char* file_name, str* *text, str *buffer, int* error_code) {
     _LOG_FAIL_CHECK_(file_name, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, EFAULT);
     _LOG_FAIL_CHECK_(text, "error", ERROR_REPORTS, return READING_FAILURE;, error_code, EFAULT);
