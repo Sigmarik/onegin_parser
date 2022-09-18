@@ -51,11 +51,13 @@ struct Text {
  */
 void free_text(Text* text, int* err_code = NULL);
 
+// TODO: Why though? (see line 60)
 static const size_t MAX_SOURCE_NAME_LENGTH = 1000;
 
 static int log_threshold = 1;
 static void* TEMP_log_threshold_array[] = {&log_threshold};
 
+// TODO: Just write empty brackets[], it will calculate size for you!
 static char text_source_name[MAX_SOURCE_NAME_LENGTH] = "onegin.txt";
 static void* TEMP_text_source_name_array[] = {&text_source_name};
 
@@ -74,6 +76,33 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
         .name = {'I', ""}, 
         .action = {
             .parameters = TEMP_log_threshold_array,
+            // TODO: Yeah, void** params created need
+            //       for this TEMP_* stuff.
+            //       
+            //       I think I would instead make
+            //       macro for defining ActionTags
+            //
+            // ==> Like:     v~~~~~~~~~~~~~~~~~~~~~~~~ name of the action
+            // DEFINE_ACTION(CHANGE_LOG_THRESHOLD, { 'I', "" },
+            //               ACTION(edit_int, &log_threshold))
+            // 
+            // Which would internally create all the
+            // necessary TEMP_* cringe.
+            //
+            // ==> And then do:
+            // const ActionTag actions[] = {
+            //     CHANGE_LOG_THRESHOLD,
+            //     ...
+            // };
+            //
+            // This approach would make you name your actions,
+            // which, I think, is a good thing. 
+            //
+            // At least, you'll have something meaningful 
+            // at top level instead of all TEMP_* boilerplate.
+            //
+            // Consider, if you like it.
+
             .parameters_length = 1, 
             .function = edit_int,
         },
@@ -93,6 +122,31 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
     },
 };
 
+// TODO: No reason to write "main function of the program", it's obvious
+//       to any developer reading your code, just clutters documentation.
+//
+//       In general, it's advised by many to write documentation in imperative.
+//
+//       For example, instead of:
+//           Function that reads file and puts...
+// 
+//       You could write:
+//           Read file and put...
+//
+//       Note absence of "s" after verbs, it's because we are no longer
+//       describing function in third person, we're just telling user
+//       what's gonna happen when he calls it!
+//
+//       This "s" absence is common for all imperative sentences.
+//       And, I general, is consider a good style, which make documentation
+//       less wishy-washy and more straight-to-the-point.
+//
+// TODO: Also need for documentation of "main" is debatable :)
+//       I mean, it should match with program description (for example, README)
+//
+//       And all technicalities about main (like that it returns error code) 
+//       are well-known by all C/C++ programmers (there's no other way if they
+//       wrote at least one program) and well-documented in standard library.
 /**
  * @brief Main function of the program. Reads file and puts its multiple forms into another file.
  * 
@@ -124,6 +178,27 @@ int main(const int argc, const char** argv) {
     log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
     write_file("text_copy.txt", text.lines, text_size, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
+    // TODO:         ^~~~~~~ errno checking is very common in your program,
+    //               consider extracting this in another macro!
+    //
+    // Or, maybe, even couple it with logging and action itself and extract pattern:
+    //     log_action();
+    //     action();
+    //     check_success();
+    //
+    // Which is very common on its own (5 occurences just in this function).
+    //
+    // For example, you could make something like:
+    //     DO_AND_CHECK_SUCCESS(ACTION(write_file), "text_copy.txt", ...);
+    //
+    // Expand in:
+    //     log_printf(STATUS_REPORTS, "status", "write_file...");
+    //     write_file(...);
+    //     _ON_ERROR_(return EXIT_FAILURE); // Shorthand for _LOG_FAIL_CHECK_i
+    //                                         i suggested earlier.
+    //
+    // It would make code cleaner, hence more readable.
+                         
 
     log_printf(STATUS_REPORTS, "status", "Sorting...\n");
     msort(text.lines, text_size, sizeof(*text.lines), compare_lines);
@@ -138,7 +213,9 @@ int main(const int argc, const char** argv) {
     log_printf(STATUS_REPORTS, "status", "Exporting inv-sorted lines...\n");
     write_file("text_inv_sorted.txt", text.lines, text_size, &errno);
     _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
+
     free_text(&text);
+    // TODO: So, if anything fails before this free, memory isn't gonna get freed?
 
     return EXIT_SUCCESS;
 }
@@ -154,6 +231,19 @@ void print_owl(const int argc, void** argv, const char* argument) {
         printf(" \\\"|\"|\"|\"/     \n");
         printf("   \"| |\"          \n");
         printf("    ^ ^             \n");
+        // TODO: There's a C++11 feature called "raw strings",
+        //       which allows you to include quotes without escaping.
+        //
+        //       Even though, it's technically C++, you're
+        //       allowed to use it if you want to.
+        // 
+        // It would make owl look cleaner in source code:
+        //       R"(  A_,,,_A   \n)"
+        //       R"( ((O)V(O))  \n)"
+        //       R"(("\"|"|"/") \n)"
+        //       R"( \"|"|"|"/  \n)"
+        //       R"(   "| |"    \n)"
+        //       R"(    ^ ^     \n)"
     }
 }
 
@@ -167,6 +257,7 @@ void print_label() {
 void free_text(Text* text, int* err_code) {
     _LOG_FAIL_CHECK_(text->charbuffer, "error", ERROR_REPORTS, return;, err_code, EFAULT);
     _LOG_FAIL_CHECK_(text->lines, "error", ERROR_REPORTS, return;, err_code, EFAULT);
+    // TODO: I think, you revoked this syntax (see line 161)    ^
 
     free(text->charbuffer); text->charbuffer = NULL;
     free(text->lines);      text->lines      = NULL;

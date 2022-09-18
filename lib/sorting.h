@@ -16,6 +16,10 @@
 
 //! TODO: Make a typedef for comparator. (use _t suffix)
 //! It will just ruin function declaration's simillarity to qsort's declaration.
+// TODO: Quite the opposite, actually, look at GNU C lib's implementation (the
+//       one, your are most likely using anyway) of stdlib's qsort: it has `compar_fn_t'
+//
+//       Which, in my opinion, makes signature look cleaner and function easier to use.
 
 /**
  * @brief (wraps void _msort()) Merge sort that works (from the user's perspective) like qsort.
