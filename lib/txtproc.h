@@ -20,6 +20,7 @@ enum READING_STATUSES {
     READING_FAILURE = -1,
 };
 
+//TODO: Make separate structures to store length of the string (arguable).
 typedef wchar_t* str;
 typedef const wchar_t* cstr;
 

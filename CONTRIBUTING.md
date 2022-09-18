@@ -7,10 +7,10 @@ as these files contain some important information about how you should not be an
 ## Language
 Primarely English (US). It also applyes to comments, documentation, naming and messages.
 There are a few (2 lines in main.cpp) comments written in Russian, though, as they describe 
-joke function and not very important, but it is highly exceptional and should not be present anywhere else in code.
+joke function and not very important, and it is highly exceptional and should not be present anywhere else in the code.
 It also will be highly appreciated if you spot grammatical mistakes anywhere in the content of this reposiory and will be able to fix them.
 ## Code Style
-We use codestyle close to pep8 for python, but for C++.
+We use codestyle that is close to pep8 for python, but for C++.
 
 ### Naming
 Variables and functions should be names in lower case.
@@ -181,6 +181,6 @@ double some_complex_value = (number_of_bats + number_of_caves -
 The first one's name is defined in one of the arguments of the ```log_init()``` function. This log is considered important and it is not getting erased on the next programm run.
 The second one's name is made by concatenating "_dummy.log" to the name of the first log. This file, unlike its more important counterpart, is erased every time the program starts.
 ## Contact Information
-For more information about contributing
+For more information about contributing to the project contact
 
 ***kudriashov.it@phystech.edu***

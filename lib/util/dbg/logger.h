@@ -23,14 +23,6 @@ enum IMPORTANCES {
     ABSOLUTE_IMPORTANCE = 1000,
 };
 
-/**
- * @brief Runs fprintf() in logs.
- * 
- * @param importance message importance
- * @param tag message tag
- * @param __VA_ARGS__ arguments for fprintf()
- */
-
 #include <stdarg.h>
 
 #ifndef NLOG_PRINT_LINE

@@ -6,7 +6,6 @@
 #include "debug.h"
 
 static FILE* logfile = NULL;
-static FILE* logdummy = NULL;
 static unsigned int log_threshold = 0;
 
 /**
@@ -28,18 +27,10 @@ static FILE* log_file(const unsigned int importance = ABSOLUTE_IMPORTANCE);
 
 void log_init(const char* filename, const unsigned int threshold, int* error_code) {
     log_threshold = threshold;
-    char dummyname[1024] = {};
-    strncpy(dummyname, filename, 1023);
-    strncat(dummyname, "_dummy.log", 1023 - strlen(dummyname));
-
-    if (!(logdummy = fopen(dummyname, "w"))) {
-        if (error_code) *error_code = FILE_ERROR;
-        return;
-    }
-
 
     if ((logfile = fopen(filename, "a"))) {
-        log_printf(ABSOLUTE_IMPORTANCE, "open", "Log file %s was opened. Log dummy - %s.\n", filename, dummyname);
+        setvbuf(logfile, NULL, _IOFBF, 1);
+        log_printf(ABSOLUTE_IMPORTANCE, "open", "Log file %s was opened.\n", filename);
         return;
     }
 
@@ -63,7 +54,7 @@ void _log_printf(const unsigned int importance, const char* tag, const char* for
     va_list args;
     va_start(args, format);
 
-    if (log_file(importance)) {
+    if (importance >= log_threshold && logfile) {
         log_prefix(tag, importance);
         vfprintf(log_file(importance), format, args);
         fflush(log_file(importance));
@@ -73,13 +64,13 @@ void _log_printf(const unsigned int importance, const char* tag, const char* for
 }
 
 static FILE* log_file(const unsigned int importance) {
-    return importance >= log_threshold ? logfile : logdummy;
+    return logfile;
 }
 
 void log_close(int* error_code) {
     if (!log_file()) return;
-    log_printf(ABSOLUTE_IMPORTANCE, "close", "Closing log files.\n\n");
-    if (!fclose(logfile) || !fclose(logdummy)) {
+    log_printf(ABSOLUTE_IMPORTANCE, "close", "Closing log file.\n\n");
+    if (!fclose(logfile)) {
         if (error_code) *error_code = FILE_ERROR;
     }
 }

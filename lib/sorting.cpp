@@ -2,8 +2,8 @@
 
 #include <cstring>
 
-void msort(void* array, int length, size_t cell_size, 
-           int (*comparison)(const void*, const void*), void* buffer) {
+static void _msort(void* array, int length, size_t cell_size, 
+           int (*comparison)(const void* ptr_a, const void* ptr_b), void* buffer) {
     if (length <= 1) return;
     bool init_buffer = false;
     if (!buffer) {
@@ -12,8 +12,8 @@ void msort(void* array, int length, size_t cell_size,
     }
 
     int mid = length / 2;
-    msort(array,                          mid,          cell_size, comparison, buffer);
-    msort((char*)array + mid * cell_size, length - mid, cell_size, comparison, (char*)buffer + mid * cell_size);
+    _msort(array,                          mid,          cell_size, comparison, buffer);
+    _msort((char*)array + mid * cell_size, length - mid, cell_size, comparison, (char*)buffer + mid * cell_size);
 
     int left_id = 0, right_id = mid;
     for (int id = 0; id < length; id++) {
@@ -30,4 +30,8 @@ void msort(void* array, int length, size_t cell_size,
     }
 
     if (init_buffer) free(buffer);
+}
+
+void msort(void* array, int length, size_t cell_size, int (*comparison)(const void* ptr_a, const void* ptr_b)) {
+    _msort(array, length, cell_size, comparison, NULL);
 }

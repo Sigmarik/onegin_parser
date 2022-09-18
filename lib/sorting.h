@@ -14,8 +14,11 @@
 
 #include <stdlib.h>
 
+//! TODO: Make a typedef for comparator. (use _t suffix)
+//! It will just ruin function declaration's simillarity to qsort's declaration.
+
 /**
- * @brief Merge sort that works (from the user's perspective) like qsort.
+ * @brief (wraps void _msort()) Merge sort that works (from the user's perspective) like qsort.
  * 
  * @param array pointer to the first element of the array
  * @param length array element count
@@ -23,6 +26,9 @@
  * @param comparison comparison function
  */
 void msort(void* array, int length, size_t cell_size, 
-           int (*comparison)(const void*, const void*), void* buffer = NULL);
+           int (*comparison)(const void* ptr_a, const void* ptr_b));
+//* It may or may not be useful to make this function inline as it 
+//* does not use any recursion and generally can be replaced with simple defile.
+//* Modern compilers, though, probably automatically detect things like this one.
 
 #endif

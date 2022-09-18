@@ -15,8 +15,10 @@
 #include <cstddef>
 
 /**
- * @brief 
+ * @brief Name of the comman line argument
  * 
+ * @param short_name one-character name of the argument
+ * @param long_name full name of the parameter ("" if should not be recognised)
  */
 struct ActionName {
     char short_name = 0;
@@ -32,7 +34,9 @@ struct GenericFunctionCall {
 /**
  * @brief Structure to store line arguments.
  * 
- * @param short_name
+ * @param name name of the parameter
+ * @param action function to execute on call
+ * @param description description to print on --help function
  */
 struct ActionTag {
     struct ActionName name;

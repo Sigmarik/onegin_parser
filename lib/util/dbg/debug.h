@@ -36,7 +36,8 @@ enum ERRORS {
 #define _LOG_FAIL_CHECK_(equation, tag, importance, action, errcode, errtype)                                         \
 do {                                                                                                                  \
     if (!(equation)) {                                                                                                \
-        if (errcode) *(errcode) = (errtype);                                                                          \
+        int* errptr = errcode;                                                                                        \
+        if (errptr) *(errptr) = (errtype);                                                                            \
         log_printf(importance, "error", "Equation %s in file %s at line %d failed.\n", #equation, __FILE__, __LINE__);\
         action;                                                                                                       \
     }                                                                                                                 \

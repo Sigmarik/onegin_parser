@@ -44,11 +44,20 @@ struct Text {
     str charbuffer = NULL;
 };
 
-static int log_threshold = 1;
-static void* __log_threshold_array[1] = {&log_threshold};
+/**
+ * @brief Frees internal buffers of the Text struct.
+ * 
+ * @param text text to free
+ */
+void free_text(Text* text, int* err_code = NULL);
 
-static char text_source_name[1000] = "onegin.txt";
-static void* __text_source_name_array[1] = {&text_source_name};
+static const size_t MAX_SOURCE_NAME_LENGTH = 1000;
+
+static int log_threshold = 1;
+static void* TEMP_log_threshold_array[] = {&log_threshold};
+
+static char text_source_name[MAX_SOURCE_NAME_LENGTH] = "onegin.txt";
+static void* TEMP_text_source_name_array[] = {&text_source_name};
 
 static const int NUMBER_OF_TAGS = 3;
 static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
@@ -62,24 +71,24 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
         .description = "prints 10 owls on the screen."
     },
     {
-        .name = {'I', "importance"}, 
+        .name = {'I', ""}, 
         .action = {
-            .parameters = __log_threshold_array,
+            .parameters = TEMP_log_threshold_array,
             .parameters_length = 1, 
             .function = edit_int,
         },
-        .description = "(in the form of -I[int]) sets log\n"
+        .description = "sets log\n"
                         "    threshold to specified number.\n" 
                         "    Does not check if integer is specified."
     },
     {
-        .name = {'R', "read"}, 
+        .name = {'R', ""}, 
         .action = {
-            .parameters = __text_source_name_array,
+            .parameters = TEMP_text_source_name_array,
             .parameters_length = 1, 
             .function = edit_string,
         },
-        .description = "(in the form of -R[name]) makes program open\n"
+        .description = "makes program open\n"
                         "    specified file instead of the default one."
     },
 };
@@ -87,7 +96,7 @@ static const struct ActionTag LINE_TAGS[NUMBER_OF_TAGS] = {
 /**
  * @brief Main function of the program. Reads file and puts its multiple forms into another file.
  * 
- * @return exit status (0 if successful)
+ * @return exit status (0 if execution was successful)
  */
 int main(const int argc, const char** argv) {
     atexit(log_end_program);
@@ -103,7 +112,7 @@ int main(const int argc, const char** argv) {
 
     struct Text text;
     int text_size = read_file(text_source_name, &text.lines, &text.charbuffer, &errno);
-    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
+    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
 
     if (text_size == READING_FAILURE) {
         log_printf(ERROR_REPORTS, "error", "Failed to read file %s. Terminating.\n", text_source_name, &text);
@@ -114,24 +123,22 @@ int main(const int argc, const char** argv) {
 
     log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
     write_file("text_copy.txt", text.lines, text_size, &errno);
-    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
+    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
 
     log_printf(STATUS_REPORTS, "status", "Sorting...\n");
-    msort(text.lines, text_size, sizeof(text.lines[0]), compare_lines, NULL);
+    msort(text.lines, text_size, sizeof(*text.lines), compare_lines);
 
     log_printf(STATUS_REPORTS, "status", "Exporting sorted lines...\n");
     write_file("text_sorted.txt", text.lines, text_size, &errno);
-    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
+    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
 
     log_printf(STATUS_REPORTS, "status", "Re-sorting...\n");
-    msort(text.lines, text_size, sizeof(text.lines[0]), compare_reverse_lines, NULL);
+    msort(text.lines, text_size, sizeof(*text.lines), compare_reverse_lines);
 
     log_printf(STATUS_REPORTS, "status", "Exporting inv-sorted lines...\n");
     write_file("text_inv_sorted.txt", text.lines, text_size, &errno);
-    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, 84);
-
-    free(text.lines);
-    free(text.charbuffer);
+    _LOG_FAIL_CHECK_(!errno, "error", ERROR_REPORTS, return EXIT_FAILURE, &errno, EIO);
+    free_text(&text);
 
     return EXIT_SUCCESS;
 }
@@ -155,4 +162,12 @@ void print_label() {
     printf("Program opens example text and prints it.\n");
     printf("Build from\n%s %s\n", __DATE__, __TIME__);
     log_printf(ABSOLUTE_IMPORTANCE, "build info", "Build from %s %s.\n", __DATE__, __TIME__);
+}
+
+void free_text(Text* text, int* err_code) {
+    _LOG_FAIL_CHECK_(text->charbuffer, "error", ERROR_REPORTS, return;, err_code, EFAULT);
+    _LOG_FAIL_CHECK_(text->lines, "error", ERROR_REPORTS, return;, err_code, EFAULT);
+
+    free(text->charbuffer); text->charbuffer = NULL;
+    free(text->lines);      text->lines      = NULL;
 }

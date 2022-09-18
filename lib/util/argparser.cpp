@@ -4,6 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Prints tag description to the console.
+ * 
+ * @param tag tag to describe
+ */
+static void print_description(const ActionTag& tag);
+
+/**
+ * @brief Checks if tag is called.
+ * 
+ * @param str string to check
+ * @param tag tag to compare string to
+ * @return bool if tag could be called by str
+ */
+static inline bool match(const char* str, const ActionTag& tag);
+
 void parse_args(const int argc, const char** argv, const int action_c, const struct ActionTag* actions) {
     for (int arg_id = 1; arg_id < argc; arg_id++) {
         const char* arg = argv[arg_id];
@@ -25,10 +41,9 @@ void parse_args(const int argc, const char** argv, const int action_c, const str
             printf("Valid tags:\n\n");
             printf("-H -h -help --help - prints this message.\n\n");
             for (int tag_id = 0; tag_id < action_c; tag_id++) {
-                printf("-%c --%s - %s\n\n", actions[tag_id].name.short_name, actions[tag_id].name.long_name, 
-                                               actions[tag_id].description);
+                print_description(actions[tag_id]);
             }
-            // Any program should stop when user only wants to know its options.
+            //* Any program should stop when user only wants to know his options.
             exit(EXIT_SUCCESS);
         }
     }
@@ -40,4 +55,22 @@ void edit_int(const int argc, void** argv, const char* argument) {
 
 void edit_string(const int argc, void** argv, const char* argument) {
     strcpy(*(char**)argv, argument);
+}
+
+void print_description(const ActionTag& tag) {
+    if (*tag.name.long_name)
+        printf("-%c --%s - %s\n\n", tag.name.short_name, tag.name.long_name, tag.description);
+    else
+        printf("-%c - %s\n\n", tag.name.short_name, tag.description);
+}
+
+bool match(const char* str, const ActionTag& tag) {
+    if (*str != '-') return false;
+
+    bool short_match = str[1] == tag.name.short_name;
+
+    if (*tag.name.long_name && *str && str[1] == '-') {
+        bool long_match = strcmp(str + 2, tag.name.long_name) == 0;
+        return short_match || long_match;
+    } else return short_match;
 }
