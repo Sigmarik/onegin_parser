@@ -22,7 +22,9 @@ enum READING_STATUSES {
 
 //TODO: Make separate structures to store length of the string (arguable).
 typedef wchar_t* str;
-typedef const wchar_t* cstr;
+typedef const wchar_t* cstr; // TODO: I'd rather write const str, since
+                             //       it's not very obvious what cstr means
+                             //       (my first intuition was C-string)
 
 /**
  * @brief Compares two strings as strcmp().

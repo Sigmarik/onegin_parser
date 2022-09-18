@@ -8,6 +8,9 @@ static void _msort(void* array, int length, size_t cell_size,
     bool init_buffer = false;
     if (!buffer) {
         init_buffer = true;
+
+        // TODO: Dynamic memory allocations are pretty expensive, why do you use
+        //       them i a sort? I struggle to understand.
         buffer = calloc(length, cell_size);
     }
 
