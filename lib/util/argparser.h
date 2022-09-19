@@ -45,7 +45,7 @@ struct ActionTag {
 };
 
 /**
- * @brief Parses command line arguments and executes actions.
+ * @brief Parse command line arguments and execute actions.
  * 
  * @param argc number of arguments
  * @param argv arguments
@@ -55,7 +55,7 @@ struct ActionTag {
 void parse_args(const int argc, const char** argv, const int actions_count, const struct ActionTag* actions);
 
 /**
- * @brief Sets integer value (first pointer) to parsed value of argument.
+ * @brief Set integer value (first pointer) to parsed value of argument.
  * 
  * @param argc number of arguments
  * @param argv pointers to arguments (1-st element should be int*)
@@ -64,7 +64,7 @@ void parse_args(const int argc, const char** argv, const int actions_count, cons
 void edit_int(const int argc, void** argv, const char* argument);
 
 /**
- * @brief Sets string value to the value of the argument.
+ * @brief Set string value to the value of the argument.
  * 
  * @param argc number of arguments
  * @param argv pointers to arguments (1-st element should be const char**)

@@ -9,7 +9,7 @@
 #include "util/dbg/debug.h"
 
 /**
- * @brief Checks if character shold not be skipped during sorting.
+ * @brief Check if character shold not be skipped during sorting.
  * 
  * @param character symbol to check
  * @return bool 1 if character must be sorted and 0 if it isn't

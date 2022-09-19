@@ -19,7 +19,7 @@
 #include "lib/sorting.h"
 
 /**
- * @brief Prints poem of owls.
+ * @brief Print poem of owls.
  * 
  * @param argc unimportant
  * @param argv unimportant
@@ -28,7 +28,7 @@
 void print_owl(const int argc, void** argv, const char* argument);
 
 /**
- * @brief Prints program label and build date/time to console.
+ * @brief Print program label and build date/time to console.
  * 
  */
 void print_label();
@@ -45,7 +45,7 @@ struct Text {
 };
 
 /**
- * @brief Frees internal buffers of the Text struct.
+ * @brief Free internal buffers of the Text struct.
  * 
  * @param text text to free
  */

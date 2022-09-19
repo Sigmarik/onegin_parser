@@ -42,10 +42,8 @@ enum IMPORTANCES {
 } while(0)
 #endif
 
-// One macro isn't that bad considering it can be very useful for debugging
-
 /**
- * @brief Opens log file or creates empty one.
+ * @brief Open log file or creates empty one.
  * 
  * @param filename (optional) log file name
  * @param threshold (optional) value, below which porgramm would print log lines into dummy file.
@@ -54,7 +52,7 @@ enum IMPORTANCES {
 void log_init(const char* filename = "log", const unsigned int threshold = 0, int* error_code = NULL);
 
 /**
- * @brief Prints line to logs with automatic prefix.
+ * @brief Print line to logs with automatic prefix.
  * 
  * @param importance importance of the message
  * @param tag message tag
@@ -64,7 +62,7 @@ void log_init(const char* filename = "log", const unsigned int threshold = 0, in
 void _log_printf(const unsigned int importance, const char* tag, const char* format, ...);
 
 /**
- * @brief Closes all opened logs.
+ * @brief Close opened log file.
  * 
  * @param error_code (optional) variable to put function execution code in
  */

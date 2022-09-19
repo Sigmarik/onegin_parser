@@ -5,14 +5,14 @@
 #include <stdlib.h>
 
 /**
- * @brief Prints tag description to the console.
+ * @brief Print tag description to the console.
  * 
  * @param tag tag to describe
  */
 static void print_description(const ActionTag& tag);
 
 /**
- * @brief Checks if tag is called.
+ * @brief Check if tag was called.
  * 
  * @param str string to check
  * @param tag tag to compare string to
