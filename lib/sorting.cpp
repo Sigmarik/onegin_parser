@@ -2,15 +2,11 @@
 
 #include <cstring>
 
-static void _msort(void* array, int length, size_t cell_size, 
-           int (*comparison)(const void* ptr_a, const void* ptr_b), void* buffer) {
+static void _msort(void* array, int length, size_t cell_size, __compar_fn_t comparison, void* buffer) {
     if (length <= 1) return;
     bool init_buffer = false;
     if (!buffer) {
         init_buffer = true;
-
-        // TODO: Dynamic memory allocations are pretty expensive, why do you use
-        //       them i a sort? I struggle to understand.
         buffer = calloc(length, cell_size);
     }
 
@@ -35,6 +31,6 @@ static void _msort(void* array, int length, size_t cell_size,
     if (init_buffer) free(buffer);
 }
 
-void msort(void* array, int length, size_t cell_size, int (*comparison)(const void* ptr_a, const void* ptr_b)) {
+void msort(void* array, int length, size_t cell_size, __compar_fn_t comparison) {
     _msort(array, length, cell_size, comparison, NULL);
 }
