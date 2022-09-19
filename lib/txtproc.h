@@ -20,10 +20,11 @@ struct Charline {
     size_t length = 0;
 
     Charline operator=(const wchar_t * const new_string) { sequence = new_string; length = wcslen(sequence); return *this; }
-    wchar_t operator[](int index) const { return sequence[index]; }
+
+    wchar_t operator[](int index) const { return sequence[index];                            }
     Charline operator+(int delta) const { return Charline{sequence + delta, length - delta}; }
     Charline operator-(int delta) const { return Charline{sequence - delta, length + delta}; }
-    wchar_t operator*() const { return *sequence; }
+    wchar_t operator*()           const { return *sequence;                                  }
 
     const wchar_t* begin() const { return sequence; }
     const wchar_t* end() const { return sequence + length; }
