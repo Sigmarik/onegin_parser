@@ -23,6 +23,9 @@ static inline int iswsortable(const wchar_t character) {
  * 
  */
 static size_t get_file_length(FILE* file) {
+
+    // TODO: Rewrite function using fstat().
+
     size_t position = ftell(file);
     fseek(file, 0L, SEEK_END);
     size_t file_size = ftell(file);
@@ -43,6 +46,15 @@ static inline int in_bounds(const void * const value, const void * const left, c
         return right <= value && value <= left;
     }
     return left <= value && value <= right;
+}
+
+int compare_line_pointers(const void* ptr_a, const void* ptr_b) {
+    //* There can be overflow so it is better to write individual if-statements.
+    const wchar_t* start_a = ((Charline*)ptr_a)->begin();
+    const wchar_t* start_b = ((Charline*)ptr_b)->begin();
+    if (start_a > start_b) return 1;
+    if (start_a < start_b) return -1;
+    return 0;
 }
 
 int wlinecmp(const wchar_t* start_a, const wchar_t* end_a, const wchar_t* start_b, const wchar_t* end_b) {
@@ -90,6 +102,8 @@ int read_file(const char* file_name, Charline* *text, wchar_t* *buffer, int* err
     int line_count = 1;
 
     setvbuf(file, NULL, _IOFBF, file_size * sizeof(**buffer));
+
+    // TODO: Rewrite function with open(), read() and close() so it is possible to read whole file content at once.
 
     *buffer = (wchar_t*)calloc(file_size, sizeof(**buffer));
     _LOG_FAIL_CHECK_(*buffer, "error", ERROR_REPORTS, fclose(file);return READING_FAILURE;, error_code, ENOMEM);

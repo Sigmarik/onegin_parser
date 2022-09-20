@@ -36,6 +36,15 @@ enum READING_STATUSES {
 };
 
 /**
+ * @brief Compare two pointer to the starts of the line as is.
+ * 
+ * @param ptr_a first line
+ * @param ptr_b second line
+ * @return int ptr_a - prt_b
+ */
+int compare_line_pointers(const void* ptr_a, const void* ptr_b);
+
+/**
  * @brief Compare two character sequences iterating from start to end ignoring punctuation characters.
  * 
  * @param start_a start of the first sequence

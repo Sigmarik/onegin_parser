@@ -1,6 +1,6 @@
-# Text Sorting Programm
+# Text Sorting Program
 ## Description & Purpose
-The programm opens text file, creates its copy, sorts lines of the file, then sorts them again, but like if they were inverted and then it exports all results into specified files.
+The program opens text file, creates its copy, sorts lines of the file, then sorts them again, but like if they were inverted and then it exports all results into specified files.
 ## Building
 
 Compile project (linux):

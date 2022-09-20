@@ -174,11 +174,11 @@ double some_complex_value = (number_of_bats + number_of_caves -
 
 **utils** - module with "orphan" functions.
 
-**main.cpp** - entry point of the programm. Whan run it reads file (**onegin.txt** placed in the same folder by default) and performs copying and two kinds of sorting.
+**main.cpp** - entry point of the program. Whan run it reads file (**onegin.txt** placed in the same folder by default) and performs copying and two kinds of sorting.
 ## Logger Structure
 **logger** module when initialized through ```log_init()``` function creates two log files (important and unimportant one) and defines certaint importance that server as a threshold between first and second file. When function ```log_printf()``` is called, it receives importance level of a message to print, and, if that importance is less then logger threshold, the message goes into second (less important) log file or the forst one otherwise.
 ### Difference between two logger files.
-The first one's name is defined in one of the arguments of the ```log_init()``` function. This log is considered important and it is not getting erased on the next programm run.
+The first one's name is defined in one of the arguments of the ```log_init()``` function. This log is considered important and it is not getting erased on the next program run.
 The second one's name is made by concatenating "_dummy.log" to the name of the first log. This file, unlike its more important counterpart, is erased every time the program starts.
 ## Contact Information
 For more information about contributing to the project contact

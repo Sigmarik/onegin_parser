@@ -28,14 +28,22 @@ enum IMPORTANCES {
 #ifndef NLOG_PRINT_LINE
 /**
  * @brief Print message to logs followed by call information.
+ * 
+ * @param importance message importance (more important = higher value)
+ * @param tag prefix of the message
+ * @param __VA_ARGS__ arguments as if they were in printf()
  */
-#define log_printf(importance, tag, ...) do {                                   \
+#define log_printf(importance, tag, ...) do {                                                            \
     _log_printf(importance, tag, " ----- Call on the line %d of file %s. -----\n", __LINE__, __FILE__);  \
-    _log_printf(importance, tag, __VA_ARGS__);                                  \
+    _log_printf(importance, tag, __VA_ARGS__);                                                           \
 } while(0)
 #else
 /**
  * @brief Print message to logs.
+ * 
+ * @param importance message importance (more important = higher value)
+ * @param tag prefix of the message
+ * @param __VA_ARGS__ arguments as if they were in printf()
  */
 #define log_printf(importance, tag, ...) do { \
     _log_printf(importance, tag, __VA_ARGS__);\

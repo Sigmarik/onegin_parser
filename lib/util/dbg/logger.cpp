@@ -29,7 +29,7 @@ void log_init(const char* filename, const unsigned int threshold, int* error_cod
     log_threshold = threshold;
 
     if ((logfile = fopen(filename, "a"))) {
-        setvbuf(logfile, NULL, _IOFBF, 1);
+        setvbuf(logfile, NULL, _IONBF, 1);
         log_printf(ABSOLUTE_IMPORTANCE, "open", "Log file %s was opened.\n", filename);
         return;
     }
@@ -64,7 +64,7 @@ void _log_printf(const unsigned int importance, const char* tag, const char* for
 }
 
 static FILE* log_file(const unsigned int importance) {
-    return logfile;
+    return importance >= log_threshold ? logfile : NULL;
 }
 
 void log_close(int* error_code) {

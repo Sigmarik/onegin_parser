@@ -13,13 +13,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <clocale>
+
 #include "lib/util/dbg/debug.h"
 #include "lib/util/argparser.h"
 #include "lib/txtproc.h"
 #include "lib/sorting.h"
 
 /**
- * @brief Print poem of owls.
+ * @brief Print a bunch of owls.
  * 
  * @param argc unimportant
  * @param argv unimportant
@@ -112,12 +113,8 @@ int main(const int argc, const char** argv) {
 
     log_printf(STATUS_REPORTS, "status", "Descovered %d lines of text.\n", text_size);
 
-    log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
-    write_file("text_copy.txt", text.lines, text_size, &errno);
-    _ABORT_ON_ERRNO_();
-
     log_printf(STATUS_REPORTS, "status", "Sorting...\n");
-    msort(text.lines, text_size, sizeof(*text.lines), compare_lines);
+    qsort(text.lines, text_size, sizeof(*text.lines), compare_lines);
 
     log_printf(STATUS_REPORTS, "status", "Exporting sorted lines...\n");
     write_file("text_sorted.txt", text.lines, text_size, &errno);
@@ -128,6 +125,13 @@ int main(const int argc, const char** argv) {
 
     log_printf(STATUS_REPORTS, "status", "Exporting inv-sorted lines...\n");
     write_file("text_inv_sorted.txt", text.lines, text_size, &errno);
+    _ABORT_ON_ERRNO_();
+
+    log_printf(STATUS_REPORTS, "status", "Rebuilding source text...\n");
+    msort(text.lines, text_size, sizeof(*text.lines), compare_line_pointers);
+
+    log_printf(STATUS_REPORTS, "status", "Writing the direct copy...\n");
+    write_file("text_copy.txt", text.lines, text_size, &errno);
     _ABORT_ON_ERRNO_();
 
     free_text(&text);

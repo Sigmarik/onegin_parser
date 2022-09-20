@@ -32,6 +32,12 @@ enum ERRORS {
 /**
  * @brief print description to log file if equation fails.
  * 
+ * @param equation value to use as an inverse trigger for assert
+ * @param tag prefix to print before failure message
+ * @param importance
+ * @param action sequence to run of failure
+ * @param errcode variable to write errtype in
+ * @param arrtype error code
  */
 #define _LOG_FAIL_CHECK_(equation, tag, importance, action, errcode, errtype)                                         \
 do {                                                                                                                  \
@@ -46,6 +52,12 @@ do {                                                                            
 /**
  * @brief (DISABLED) print description to log file if equation fails.
  * 
+ * @param equation value to use as an inverse trigger for assert
+ * @param tag prefix to print before failure message
+ * @param importance
+ * @param action sequence to run of failure
+ * @param errcode variable to write errtype in
+ * @param arrtype error code
  */
 #define _LOG_FAIL_CHECK_(equation, tag, importance, action, errcode, errtype) equation
 #endif
