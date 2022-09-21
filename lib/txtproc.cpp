@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <cwctype>
 #include <errno.h>
@@ -23,14 +24,9 @@ static inline int iswsortable(const wchar_t character) {
  * 
  */
 static size_t get_file_length(FILE* file) {
-
-    // TODO: Rewrite function using fstat().
-
-    size_t position = ftell(file);
-    fseek(file, 0L, SEEK_END);
-    size_t file_size = ftell(file);
-    fseek(file, position, SEEK_SET);
-    return file_size;
+    struct stat buffer;
+    fstat(fileno(file), &buffer);
+    return buffer.st_size;
 }
 
 /**
